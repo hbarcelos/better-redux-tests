@@ -1,5 +1,4 @@
 import cuid from 'cuid';
-import td from 'testdouble';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import reducer, {
@@ -319,18 +318,21 @@ describe('auth slice', () => {
       it('creates both syncDocumentsStart and syncDocumentsSuccess when syncDocuments API call succeeds', async () => {
         // Arrange
         const cleanDocument = createDocument();
-        const dirtyDocument = createDocument();
+        const dirtyDocumentDraft = createDocument();
         const dirtyDocumentPatch = createDocumentPatch({
-          id: dirtyDocument.id,
+          id: dirtyDocumentDraft.id,
         });
         const currentState = updateDocument(
           dirtyDocumentPatch,
-          addDocuments([cleanDocument, dirtyDocument])
+          addDocuments([cleanDocument, dirtyDocumentDraft])
         );
-        const store = mockStore({ documents: currentState });
+        const rootState = { documents: currentState };
+        const dirtyDocument = selectDocument(rootState)(dirtyDocumentDraft.id);
+        const store = mockStore(rootState);
 
-        const responsePayload = [{ id: dirtyDocument.id }];
+        const responsePayload = [{ id: dirtyDocumentDraft.id }];
         api.syncDocuments.mockResolvedValueOnce(responsePayload);
+        const spy = jest.spyOn(api, 'syncDocuments');
 
         // Act
         await store.dispatch(syncDirtyDocuments());
@@ -341,6 +343,7 @@ describe('auth slice', () => {
           syncDocumentsSuccess({ documents: responsePayload }),
         ];
         expect(store.getActions()).toEqual(expectedActions);
+        expect(spy).toHaveBeenCalledWith([dirtyDocument]);
       });
 
       it('creates both syncDocumentsStart and syncDocumentsFailure when syncDocuments API call fails', async () => {
@@ -359,8 +362,8 @@ describe('auth slice', () => {
         const store = mockStore(rootState);
 
         const error = new Error('Unavailable server');
-        api.syncDocuments = td.function();
-        td.when(api.syncDocuments([dirtyDocument])).thenReject(error);
+        api.syncDocuments.mockRejectedValueOnce(error);
+        const spy = jest.spyOn(api, 'syncDocuments');
 
         // Act
         await store.dispatch(syncDirtyDocuments());
@@ -371,6 +374,9 @@ describe('auth slice', () => {
           syncDocumentsFailure({ error }),
         ];
         expect(store.getActions()).toEqual(expectedActions);
+        expect(spy).toHaveBeenCalledWith([dirtyDocument]);
+
+        spy.mockRestore();
       });
     });
   });
