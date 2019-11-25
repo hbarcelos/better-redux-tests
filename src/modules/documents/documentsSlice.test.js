@@ -375,8 +375,6 @@ describe('auth slice', () => {
         ];
         expect(store.getActions()).toEqual(expectedActions);
         expect(spy).toHaveBeenCalledWith([dirtyDocument]);
-
-        spy.mockRestore();
       });
     });
   });
