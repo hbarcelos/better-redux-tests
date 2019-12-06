@@ -2,6 +2,8 @@
 
 This repository contains my take on how to test Redux applications.
 
+It contains the source code related to this article in my blog:  
+[A better approach for testing your Redux code](https://blog.henriquebarcelos.dev/a-better-approach-for-testing-your-redux-code-ck3dnpqnu00uro4s178b8aw3e)
 
 ## TL;DR
 
