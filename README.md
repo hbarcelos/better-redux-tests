@@ -13,7 +13,7 @@ A few thoughts about how to approach Redux testing:
 
 - The smallest standalone unit in Redux is the entire state slice. Unit tests should interact with it as a whole.
 - There is no point in testing reducers, action creators and selectors in isolation. As they are tightly coupled with each other, isolation gives us little to no value.
-- Tests should interact with your redux slice same way your application will.
+- Tests should interact with your Redux slice same way your application will.
     - Always use action creators to dispatch actions.
     - Always use selectors to read from the state when performing assertions. 
     - By doing that, you will be able to catch errors in both your action creators and selectors, without having to write tests targeting them in isolation.
@@ -22,7 +22,7 @@ A few thoughts about how to approach Redux testing:
 - Using selectors gives you the granularity you need to run simple assertions.
     - If a given piece of state is not touched after an action is dispatched, you don't need to reference it in your test.
 - Selectors and action creators should be boring, so they won't require testing.
-    - If you need something more elaborate, see if [`reselect`](https://github.com/reduxjs/reselect) can help you with your selectors and if [`redux-act`](https://github.com/pauldijou/redux-act) or [`@reduxjs/toolkit`](https://redux-toolkit.js.org/) can ease the pain when creting actions before adding complexity by yourself.
+    - If you need something more elaborate, see if [`reselect`](https://github.com/reduxjs/reselect) can help you with your selectors and if [`redux-act`](https://github.com/pauldijou/redux-act) or [`@reduxjs/toolkit`](https://redux-toolkit.js.org/) can ease the pain when creating actions before adding complexity by yourself.
 - Your slice is somewhat equivalent to a pure function, which means you don't need any mocking facilities in order to test it.
 
 ### Redux + `redux-thunk`
@@ -52,7 +52,7 @@ src
         └── documentsSlice.test.js
 ```
 
-The `auth` module is very simple, making it easier to fammiliarize yourself with the ideas discussed here.
+The `auth` module is very simple, making it easier to familiarize yourself with the ideas discussed here.
 
 The `documents` module looks more like a "real world" application, which makes it a little trickier to test, but the same ideas apply.
 
